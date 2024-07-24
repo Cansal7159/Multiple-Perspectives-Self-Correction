@@ -3,14 +3,15 @@ from openai import OpenAI
 
 client = OpenAI(
     # defaults to os.environ.get("OPENAI_API_KEY")
-    api_key="sk-lprUsAm4UM4pmCQpFaRtFy9T6IMTNcqqN4gqX41YoJccCbpO",
-    base_url="https://api.chatanywhere.tech/v1"
+    api_key="Your_Key",
+    base_url="*******"
 )
 
 
 def decoder_for_gpt(args,input:list):
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
+        # model="gpt-3.5-turbo",
         messages=input
     )
     return completion.choices[0].message.content
