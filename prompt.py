@@ -5,13 +5,28 @@ from config import args
 prompt_101 = "Let's think step by step."
 repair_prompt_201 = \
 '''
-Now, you should determine whether the given solution is correct. If there are errors in the intermediate steps of the solution, you should point them out and correct them.
-The answer can only be one of the following: a number, an option(like A,B,C,D), a string, or Yes/No.
-You need to analyze from the following three prompts and cannot skip any prompt when analyzing.
-Prompt1：You are a brilliant mathematician, and you have an important task ahead. You are to use all your computational power to determine whether the given solution to the problem is correct.You should analyze from the perspective of a professional mathematician. While solving this problem.You must go step by step, without skipping any steps, and you must enumerate all the reasoning involving numbers. In the end, you are to provide your answer and judge whether the original answer is correct. 
-Prompt2：You are a Google coder, and you have an important task ahead. You are to use all your computational power to determine whether the given solution to the problem is correc. You must use code to solve this problem, and provide detailed code,  also provide the result after running this code. You should analyze from the perspective of a Google programmer.Without skipping any steps, you must solve this problem using code(Python). In the end, you are to provide your answer and judge whether the original answer is correct.
-Prompt3：You are an empathetic educator, and you have an important task ahead. You are to use all your computational power to determine whether the given solution to the problem is correct. You should analyze it in detail, much like how an MIT professor would dissect the problem and  explain each step in simple terms.You must go step by step, without skipping any steps, and you must enumerate all the reasoning involving numbers. In the end, you are to provide your answer and judge whether the original answer is correct.
-When you complete the task of analyzing from these three respective prompts.Your have to make a judgment.If more than half of these respective prompts think the original answer is correct, it is considered that this answer is correct and  response with  'The orginal answer is true. Therefore, the answer is'+ your correct answer . If the number of votes does not exceed half, answer 'The orginal answer is wrong. Therefore, the answer is' + your  correct answer.
+Your task is to meticulously evaluate the validity of a proposed solution to a given problem. This evaluation should be comprehensive, focusing on the accuracy of both the final result and the individual steps leading to it. It is imperative that you scrutinize each phase of the solution without omitting any details and provide a numerical breakdown where applicable. Your ultimate goal is to ascertain the correctness of the solution and render a judgment on its accuracy.
+
+To accomplish this, you will analyze the solution from three distinct Perspectives: 
+
+Perspective 1: Approach the problem methodically, ensuring that no steps are omitted. As you progress, meticulously document all numerical reasoning. Conclude by delivering your own answer and assessing whether the initial solution is accurate. 
+
+Perspective 2: Identify the domain to which the problem pertains and employ domain-specific knowledge to evaluate the validity of the solution. If you detect an error, pinpoint the exact step where the mistake occurred, rectify it, and then present the corrected solution. 
+
+Perspective 3: Conduct a detailed examination of the solution, akin to how an academic would deconstruct the problem and explain each step in layman's terms. Begin by gaining a clear understanding of the problem, then articulate it simply and clearly, identifying the crux of the solution. Conclude by providing your own answer and determining the correctness of the original solution.
+
+After you have analyzed the solution from these three perspectives, you will render a verdict. If a majority of these perspectives conclude that the original answer is correct, you will state, "The original answer is true. Therefore, the answer is" followed by your verified answer. If the majority finds the original answer to be incorrect, you will respond with, "The original answer is wrong. Therefore, the answer is" followed by your corrected answer. When providing your answer, ensure that it matches the format of the original response, whether it be a number, a selection from multiple options, a string of text, or a yes/no response.
+'''
+
+repair_prompt_301 = \
+'''
+Your task is to meticulously evaluate the validity of a proposed solution to a given problem. This evaluation should be comprehensive, focusing on the accuracy of both the final result and the individual steps leading to it. It is imperative that you scrutinize each phase of the solution without omitting any details and provide a numerical breakdown where applicable. Your ultimate goal is to ascertain the correctness of the solution and render a judgment on its accuracy.
+
+To accomplish this, you will analyze the solution from only one perspective: 
+
+Perspective 1: Approach the problem methodically, ensuring that no steps are omitted. As you progress, meticulously document all numerical reasoning. Conclude by delivering your own answer and assessing whether the initial solution is accurate. 
+
+If the majority finds the original answer to be incorrect, you will respond with, "The original answer is wrong. Therefore, the answer is" followed by your corrected answer. When providing your answer, ensure that it matches the format of the original response, whether it be a number, a selection from multiple options, a string of text, or a yes/no response.
 '''
 def get_prompt():
     demos = None
@@ -23,7 +38,7 @@ def get_repair_prompt():
 def construct_input(prompt, text):
     inputs = [
         {"role": "user",
-         "content": 'Q:'+text+'You must response with this sentence pattern "Therefore, the answer is" '
+         "content": 'Q:'+text+'the final response should be formatted as follows: "Therefore, the answer is"'
          },
         {"role": "system",
          "content": 'A: '+prompt
@@ -37,7 +52,7 @@ def repair_output(prompt, text1,text2):
          "content": 'Q:' + text1+'A:'+text2
          },
         {"role": "system",
-         "content": prompt
+         "content": 'Your answer:'+prompt
          }
     ]
     return inputs
